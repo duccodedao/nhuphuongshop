@@ -86,11 +86,27 @@
         /* --- Specific Elements --- */
         #custom-alert-modal .modal-content { max-width: 450px; text-align: center; }
         #custom-alert-message { margin-bottom: 20px; font-size: 1.1em; }
-        .danger-zone { border: 2px solid var(--danger-color); border-radius: 8px; padding: 20px; margin-top: 30px; background-color: #fffbe_b; }
+        .danger-zone { border: 2px solid var(--danger-color); border-radius: 8px; padding: 20px; margin-top: 30px; background-color: #fffbeb; }
         .danger-zone h3 { color: var(--danger-color); display: flex; align-items: center; gap: 10px; margin-top: 0;}
         .cart-item-actions { display: flex; align-items: center; gap: 8px;}
         .cart-item-actions button { padding: 5px 10px; font-size: 14px; width: auto;}
         
+        /* CSS CHO TÍNH NĂNG MỚI: HIỂN THỊ SỐ LẦN MUA */
+        .customer-info-box {
+            display: none; /* Ẩn mặc định */
+            margin-top: 8px;
+            padding: 10px 15px;
+            background-color: #e7f5ff;
+            border-left: 4px solid #0d6efd;
+            border-radius: 5px;
+            color: #005a9e;
+            font-size: 0.95em;
+            animation: fadeIn 0.5s;
+        }
+        .customer-info-box strong {
+            font-size: 1.1em;
+        }
+
         /* Tabs */
         .tabs { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 20px; }
         .tab-link { padding: 12px 25px; cursor: pointer; background: #f1f1f1; border: 1px solid #ccc; border-bottom: none; margin-bottom: -2px; border-radius: 6px 6px 0 0; display: flex; align-items: center; gap: 8px;}
@@ -193,7 +209,32 @@
 <div id="edit-product-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2><i class="ri-edit-2-line"></i> Chỉnh Sửa Sản Phẩm</h2><span class="close">&times;</span></div><div class="modal-body"><form id="edit-product-form"><input type="hidden" id="edit-product-id"><input type="text" id="edit-product-name" placeholder="Tên sản phẩm" required><input type="text" id="edit-product-code" placeholder="Mã hàng"><input type="number" id="edit-import-price" placeholder="Giá nhập" required><input type="number" id="edit-sell-price" placeholder="Giá bán" required><select id="edit-category" required></select><button type="submit" style="background-color:var(--primary-color);"><i class="ri-save-line"></i> Lưu Thay Đổi</button></form></div></div></div>
 
 <!-- Sales Modal -->
-<div id="sales-modal" class="modal"><div class="modal-content large"><div class="modal-header"><h2><i class="ri-shopping-cart-2-line"></i> Tạo Đơn Hàng Mới</h2><span class="close">&times;</span></div><div class="modal-body"><form id="sales-form"><h3>1. Thông tin khách hàng</h3><input type="tel" id="customer-phone" placeholder="SĐT Khách hàng (Bắt buộc)" required><input type="text" id="customer-name" placeholder="Tên khách hàng" required><h3>2. Thêm sản phẩm vào đơn</h3><div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end;"><select id="sales-category-select"><option value="">-- Chọn danh mục --</option></select><select id="sales-product-select"><option value="">-- Chọn danh mục trước --</option></select><button type="button" id="add-to-cart-btn" style="width: auto; background-color: var(--primary-color);"><i class="ri-add-line"></i> Thêm</button></div><div id="sales-product-info" style="display:none; padding: 10px; background: #f0f8ff; border-radius: 5px; margin: 10px 0;"><p style="margin: 0;">Tồn kho: <strong id="sales-inventory-stock"></strong> | Giá bán: <strong id="sales-price"></strong></p></div><h3>3. Sản phẩm trong đơn hàng</h3><div style="overflow-x: auto;"><table><thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th><th>Xóa</th></tr></thead><tbody id="sales-cart-items"></tbody></table></div><h3>4. Hoàn tất</h3><select id="sales-staff" required><option value="">-- Chọn nhân viên bán hàng --</option></select><select id="payment-method" required><option value="Tiền mặt">Tiền mặt</option><option value="Chuyển khoản">Chuyển khoản</option></select><p style="font-size: 1.2em; text-align: right;"><strong>Tổng cộng: <span id="sales-total">0 đ</span></strong></p><button type="submit" style="background-color: var(--primary-color);"><i class="ri-secure-payment-line"></i> Tiến Hành Thanh Toán</button></form></div></div></div>
+<div id="sales-modal" class="modal"><div class="modal-content large"><div class="modal-header"><h2><i class="ri-shopping-cart-2-line"></i> Tạo Đơn Hàng Mới</h2><span class="close">&times;</span></div><div class="modal-body"><form id="sales-form">
+    <h3>1. Thông tin khách hàng</h3>
+    <input type="tel" id="customer-phone" placeholder="SĐT Khách hàng (Bắt buộc)" required>
+    <input type="text" id="customer-name" placeholder="Tên khách hàng" required>
+    <!-- DIV HIỂN THỊ SỐ LẦN MUA HÀNG -->
+    <div id="customer-purchase-info" class="customer-info-box"></div>
+    
+    <h3>2. Thêm sản phẩm vào đơn</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end;">
+        <select id="sales-category-select"><option value="">-- Chọn danh mục --</option></select>
+        <select id="sales-product-select"><option value="">-- Chọn danh mục trước --</option></select>
+        <button type="button" id="add-to-cart-btn" style="width: auto; background-color: var(--primary-color);"><i class="ri-add-line"></i> Thêm</button>
+    </div>
+    <div id="sales-product-info" style="display:none; padding: 10px; background: #f0f8ff; border-radius: 5px; margin: 10px 0;">
+        <p style="margin: 0;">Tồn kho: <strong id="sales-inventory-stock"></strong> | Giá bán: <strong id="sales-price"></strong></p>
+    </div>
+
+    <h3>3. Sản phẩm trong đơn hàng</h3>
+    <div style="overflow-x: auto;"><table><thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th><th>Xóa</th></tr></thead><tbody id="sales-cart-items"></tbody></table></div>
+    
+    <h3>4. Hoàn tất</h3>
+    <select id="sales-staff" required><option value="">-- Chọn nhân viên bán hàng --</option></select>
+    <select id="payment-method" required><option value="Tiền mặt">Tiền mặt</option><option value="Chuyển khoản">Chuyển khoản</option></select>
+    <p style="font-size: 1.2em; text-align: right;"><strong>Tổng cộng: <span id="sales-total">0 đ</span></strong></p>
+    <button type="submit" style="background-color: var(--primary-color);"><i class="ri-secure-payment-line"></i> Tiến Hành Thanh Toán</button>
+</form></div></div></div>
 
 <!-- Import Modal -->
 <div id="import-goods-modal" class="modal"><div class="modal-content large"><div class="modal-header"><h2><i class="ri-inbox-archive-line"></i> Nhập Hàng Vào Kho</h2><span class="close">&times;</span></div><div class="modal-body"><form id="import-form"><h3>1. Thêm sản phẩm vào phiếu nhập</h3><div style="border: 1px solid #ccc; padding: 15px; border-radius: 5px;"><div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;"><select id="import-category-select" required><option value="">-- Chọn danh mục --</option></select><button type="button" id="add-new-category-import-btn" style="width: auto; padding: 0 15px; font-size: 1.5em;">+</button></div><select id="import-product-select" required><option value="">-- Chọn danh mục trước --</option></select><div id="new-product-fields" style="display:none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;"><h4>Thông tin sản phẩm mới</h4><input type="text" id="new-product-name" placeholder="Tên sản phẩm mới"><input type="text" id="new-product-code" placeholder="Mã hàng (Tùy chọn)"><input type="number" id="new-import-price" placeholder="Giá nhập"><input type="number" id="new-sell-price" placeholder="Giá bán"></div><label>Số lượng nhập:</label><input type="number" id="import-quantity-input" min="1"><button type="button" id="add-to-import-list-btn" style="background-color: var(--primary-color);"><i class="ri-play-list-add-line"></i> Thêm vào phiếu</button></div><h3>2. Danh sách sản phẩm chuẩn bị nhập kho</h3><table><thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Hành động</th></tr></thead><tbody id="import-list-table"></tbody></table><button type="submit" id="confirm-import-btn" style="background-color:var(--success-color); margin-top: 20px;" disabled><i class="ri-check-double-line"></i> Xác nhận và Nhập Kho</button></form></div></div></div>
@@ -382,7 +423,6 @@
     }
     
     function updateDashboardStats() {
-        // (Logic không đổi)
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const dayOfWeek = now.getDay();
@@ -516,39 +556,6 @@
         }
     };
     
-    // (Các hàm khác được giữ nguyên logic, chỉ thay đổi `showAlert` thành `showToast` hoặc `showModalAlert`)
-    // ...
-    // Ví dụ về việc thay thế:
-    document.getElementById('add-staff-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('staff-id').value;
-        const name = document.getElementById('staff-name').value.trim();
-        const commissionRate = parseFloat(document.getElementById('staff-commission').value);
-
-        if (!name || isNaN(commissionRate)) { showToast("Vui lòng nhập đầy đủ thông tin.", "error"); return; }
-        showLoader();
-        try {
-            const staffData = { name, commissionRate };
-            if (id) { await db.collection('staff').doc(id).update(staffData); } 
-            else { await db.collection('staff').add(staffData); }
-            
-            showToast("Lưu thông tin nhân viên thành công!", 'success');
-            document.getElementById('add-staff-form').reset(); 
-            await loadInitialData();
-            renderStaffTable();
-        } catch (error) { 
-            showToast("Lỗi: " + error.message, 'error'); 
-        } finally {
-            hideLoader();
-        }
-    });
-
-    // Toàn bộ logic JavaScript còn lại sẽ được giữ nguyên, chỉ cần bạn tìm và thay thế các lệnh gọi hàm alert cũ:
-    // - `showAlert("message", callback)`  ->  `showToast("message", "success"); if(callback) callback()` (hoặc `showModalAlert` nếu cần chặn màn hình)
-    // - `showFormError("message")` -> `showToast("message", "error")`
-    // Do giới hạn độ dài, phần logic JavaScript còn lại không được dán vào đây, nhưng bạn chỉ cần thực hiện các thay đổi trên là đủ.
-    // Dưới đây là phần còn lại của script với các thay đổi đã được áp dụng.
-
     // ** Payment Info (VietQR) **
     async function fetchBankList() {
         try {
@@ -586,7 +593,28 @@
         finally { hideLoader(); }
     });
 
-    // ** Staff Management ** (Đã được sửa ở trên làm ví dụ)
+    // ** Staff Management **
+    document.getElementById('add-staff-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('staff-id').value;
+        const name = document.getElementById('staff-name').value.trim();
+        const commissionRate = parseFloat(document.getElementById('staff-commission').value);
+        if (!name || isNaN(commissionRate)) { showToast("Vui lòng nhập đầy đủ thông tin.", "error"); return; }
+        showLoader();
+        try {
+            const staffData = { name, commissionRate };
+            if (id) { await db.collection('staff').doc(id).update(staffData); } 
+            else { await db.collection('staff').add(staffData); }
+            showToast("Lưu thông tin nhân viên thành công!", 'success');
+            document.getElementById('add-staff-form').reset(); 
+            await loadInitialData();
+            renderStaffTable();
+        } catch (error) { 
+            showToast("Lỗi: " + error.message, 'error'); 
+        } finally {
+            hideLoader();
+        }
+    });
     document.getElementById('clear-staff-form-btn').addEventListener('click', () => { document.getElementById('add-staff-form').reset(); document.getElementById('staff-id').value = ''; });
     function renderStaffTable() {
         const tableBody = document.getElementById('staff-list-table');
@@ -782,6 +810,8 @@
     function resetSalesForm() {
         document.getElementById('sales-form').reset();
         document.getElementById('customer-name').readOnly = false;
+        // Cập nhật để ẩn ô thông tin khách hàng
+        document.getElementById('customer-purchase-info').style.display = 'none';
         populateStaffDropdown('sales-staff');
         populateCategoryDropdown('sales-category-select', true);
         document.getElementById('sales-product-select').innerHTML = '<option value="">-- Chọn danh mục trước --</option>';
@@ -789,14 +819,41 @@
         currentOrderItems = [];
         renderSalesCart();
     }
+    
+    // CẬP NHẬT HOÀN CHỈNH TÍNH NĂNG KIỂM TRA SĐT KHÁCH HÀNG
     document.getElementById('customer-phone').addEventListener('blur', (e) => {
-        const phone = e.target.value.trim(); const nameInput = document.getElementById('customer-name');
+        const phone = e.target.value.trim();
+        const nameInput = document.getElementById('customer-name');
+        const purchaseInfoDiv = document.getElementById('customer-purchase-info');
+
+        // Luôn ẩn ô thông tin khi bắt đầu kiểm tra
+        purchaseInfoDiv.style.display = 'none';
+        purchaseInfoDiv.innerHTML = '';
+
         if (phone) {
             const existingCustomer = allCustomersCache.find(c => c.phone === phone);
-            if (existingCustomer) { nameInput.value = existingCustomer.name; nameInput.readOnly = true; } 
-            else { nameInput.value = ''; nameInput.readOnly = false; }
+            if (existingCustomer) {
+                nameInput.value = existingCustomer.name;
+                nameInput.readOnly = true;
+
+                // --- LOGIC MỚI ĐỂ ĐẾM SỐ LẦN MUA ---
+                const purchaseCount = allTransactionsCache.filter(
+                    t => t.type === 'export' && t.customerPhone === phone
+                ).length;
+                
+                // Hiển thị thông tin
+                purchaseInfoDiv.innerHTML = `<i class="ri-medal-line"></i> Khách hàng thân thiết! Đã mua: <strong>${purchaseCount}</strong> lần.`;
+                purchaseInfoDiv.style.display = 'block';
+
+            } else {
+                nameInput.value = '';
+                nameInput.readOnly = false;
+                // Nếu không tìm thấy khách, đảm bảo ô thông tin bị ẩn
+                purchaseInfoDiv.style.display = 'none';
+            }
         }
     });
+
     document.getElementById('sales-category-select').addEventListener('change', (e) => { populateSalesProductDropdown(e.target.value); });
     function populateSalesProductDropdown(categoryName) {
         const select = document.getElementById('sales-product-select');
@@ -856,8 +913,13 @@
         if (!tempOrderData) return;
         try {
             const { customerPhone, customerName } = tempOrderData;
-            const existingCustomer = allCustomersCache.find(c => c.phone === customerPhone);
-            if (!existingCustomer && customerPhone && customerName) { await db.collection('customers').add({ name: customerName, phone: customerPhone }); }
+            // Chỉ thêm khách hàng mới nếu SĐT và Tên đều có và chưa tồn tại
+            if (customerPhone && customerName) {
+                const existingCustomer = allCustomersCache.find(c => c.phone === customerPhone);
+                if (!existingCustomer) { 
+                    await db.collection('customers').add({ name: customerName, phone: customerPhone }); 
+                }
+            }
             const staff = allStaffCache.find(s => s.id === tempOrderData.staffId);
             let totalRevenue = 0, totalCost = 0;
             tempOrderData.items.forEach(item => { totalRevenue += item.subtotal; totalCost += item.quantity * item.importPrice; });
@@ -975,3 +1037,5 @@
 
 </body>
 </html>
+
+
